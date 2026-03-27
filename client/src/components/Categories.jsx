@@ -15,7 +15,7 @@ const categories = [
   },
 ];
 
-export default function Categories() {
+export function Categories() {
   return (
     <section className="categories" id="categories">
       <div className="categories-inner">

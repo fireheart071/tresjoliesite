@@ -5,7 +5,7 @@ const MESSAGE = encodeURIComponent(
   'Hi! I would like to shop your clothing and jewelry collection.'
 );
 
-export default function WhatsAppButton() {
+export function WhatsAppButton() {
   return (
     <a
       className="whatsapp-button"

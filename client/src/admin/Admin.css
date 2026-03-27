@@ -1,0 +1,211 @@
+.admin-container {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.admin-navbar {
+    background: var(--white);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.admin-navbar-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-logo {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--text);
+    text-transform: uppercase;
+}
+
+.admin-nav-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-add {
+    background: var(--accent);
+    color: var(--white);
+    padding: 0.5rem 1.2rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.logout-btn {
+    padding: 0.5rem 1.2rem;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 4px;
+}
+
+.btn-add:hover, .logout-btn:hover {
+    opacity: 0.8;
+}
+
+.admin-main {
+    padding: 3rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.admin-header {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.admin-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.admin-header p {
+    color: var(--text-muted);
+}
+
+.table-container {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th {
+    background: var(--bg-soft);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.admin-table td {
+    padding: 1.25rem 1rem;
+    border-top: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.img-preview-sm {
+    width: 50px;
+    height: 50px;
+    background: var(--bg-soft);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.img-preview-sm img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-icon {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    background: var(--white);
+    border-radius: 4px;
+    margin-right: 0.5rem;
+}
+
+.btn-delete {
+    color: #c53030;
+    border-color: #feb2b2;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(44, 42, 38, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--white);
+    padding: 2.5rem;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.modal-content h2 {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.admin-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.admin-form label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.admin-form input[type="text"], 
+.admin-form select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-save {
+    flex: 1;
+    background: var(--accent);
+    color: var(--white);
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.btn-cancel {
+    flex: 1;
+    background: var(--bg-soft);
+    color: var(--text);
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-weight: 600;
+}
