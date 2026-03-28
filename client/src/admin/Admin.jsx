@@ -9,9 +9,10 @@ const PRODUCTS_API = `${API_BASE_URL}/products`;
 export const Admin = () => {
     const { token, logout } = useAuth();
     const queryClient = useQueryClient();
-    const [formData, setFormData] = useState({ name: '', category: 'Clothing', price: '', featured: false, images: [] });
+    const [formData, setFormData] = useState({ name: '', category: 'Clothing', price: '', currency: 'USD', featured: false, images: [] });
     const [editingId, setEditingId] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [viewProduct, setViewProduct] = useState(null);
     const [imageFiles, setImageFiles] = useState([]);
 
     // API Functions
@@ -29,6 +30,7 @@ export const Admin = () => {
         data.append('name', product.name);
         data.append('category', product.category);
         data.append('price', product.price);
+        data.append('currency', product.currency);
         data.append('featured', product.featured);
         
         if (id) {
@@ -114,6 +116,7 @@ export const Admin = () => {
             name: product.name, 
             category: product.category, 
             price: product.price, 
+            currency: product.currency || 'USD',
             featured: product.featured || false,
             images: product.images || []
         });
@@ -122,8 +125,12 @@ export const Admin = () => {
         setShowModal(true);
     };
 
+    const handleView = (product) => {
+        setViewProduct(product);
+    };
+
     const handleOpenModal = () => {
-        setFormData({ name: '', category: 'Clothing', price: '', featured: false, images: [] });
+        setFormData({ name: '', category: 'Clothing', price: '', currency: 'USD', featured: false, images: [] });
         setImageFiles([]);
         setEditingId(null);
         setShowModal(true);
@@ -177,19 +184,23 @@ export const Admin = () => {
                                 <tr key={product._id}>
                                     <td>
                                         <div className="img-preview-row">
-                                            {product.images?.slice(0, 3).map((img, i) => (
-                                                <img key={i} src={img} alt="" className="img-preview-sm" />
-                                            ))}
-                                            {product.images?.length > 3 && <span className="more-count">+{product.images.length - 3}</span>}
+                                            {product.images?.length > 0 ? (
+                                                <img src={product.images[0]} alt="" className="img-preview-sm" />
+                                            ) : (
+                                                <div className="img-preview-placeholder">No Image</div>
+                                            )}
                                         </div>
                                     </td>
                                     <td>{product.name}</td>
                                     <td>{product.category}</td>
-                                    <td>{product.price}</td>
+                                    <td>{product.currency} {product.price}</td>
                                     <td>{product.featured ? 'Yes' : 'No'}</td>
                                     <td>
-                                        <button className="btn-icon" onClick={() => handleEdit(product)}>Edit</button>
-                                        <button className="btn-icon btn-delete" onClick={() => handleDelete(product._id)}>Delete</button>
+                                        <div className="action-btns">
+                                            <button className="btn-icon" onClick={() => handleView(product)}>View</button>
+                                            <button className="btn-icon" onClick={() => handleEdit(product)}>Edit</button>
+                                            <button className="btn-icon btn-delete" onClick={() => handleDelete(product._id)}>Delete</button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -216,9 +227,20 @@ export const Admin = () => {
                                             <option value="Jewelry">Jewelry</option>
                                         </select>
                                     </div>
-                                    <div className="form-group">
-                                        <label>Price</label>
-                                        <input type="text" name="price" value={formData.price} onChange={handleInputChange} required />
+                                    <div className="form-row">
+                                        <div className="form-group">
+                                            <label>Currency</label>
+                                            <select name="currency" value={formData.currency} onChange={handleInputChange}>
+                                                <option value="NGN">NGN (₦)</option>
+                                                <option value="USD">USD ($)</option>
+                                                <option value="EUR">EUR (€)</option>
+                                                <option value="GBP">GBP (£)</option>
+                                            </select>
+                                        </div>
+                                        <div className="form-group flex-grow">
+                                            <label>Price</label>
+                                            <input type="text" name="price" value={formData.price} onChange={handleInputChange} required />
+                                        </div>
                                     </div>
                                     <div className="form-group checkbox-group">
                                         <label>
@@ -262,6 +284,53 @@ export const Admin = () => {
                                 <button type="button" onClick={handleCloseModal} className="btn-cancel">Cancel</button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {viewProduct && (
+                <div className="modal-overlay" onClick={() => setViewProduct(null)}>
+                    <div className="modal-content view-modal" onClick={e => e.stopPropagation()}>
+                        <div className="view-header">
+                            <h2>Product Details</h2>
+                            <button className="close-btn" onClick={() => setViewProduct(null)}>&times;</button>
+                        </div>
+                        <div className="view-grid">
+                            <div className="view-images">
+                                {viewProduct.images?.map((img, i) => (
+                                    <img key={i} src={img} alt="" className="view-img-item" />
+                                ))}
+                                {(!viewProduct.images || viewProduct.images.length === 0) && <p>No images available</p>}
+                            </div>
+                            <div className="view-info">
+                                <div className="view-field">
+                                    <label>Name</label>
+                                    <p>{viewProduct.name}</p>
+                                </div>
+                                <div className="view-field">
+                                    <label>Category</label>
+                                    <p>{viewProduct.category}</p>
+                                </div>
+                                <div className="view-field">
+                                    <label>Price</label>
+                                    <p>{viewProduct.currency} {viewProduct.price}</p>
+                                </div>
+                                <div className="view-field">
+                                    <label>Status</label>
+                                    <p>{viewProduct.featured ? 'Featured Item' : 'Standard Item'}</p>
+                                </div>
+                                <div className="view-field">
+                                    <label>Added On</label>
+                                    <p>{new Date(viewProduct.createdAt).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="view-actions">
+                            <button className="btn-add" onClick={() => {
+                                handleEdit(viewProduct);
+                                setViewProduct(null);
+                            }}>Edit Product</button>
+                        </div>
                     </div>
                 </div>
             )}

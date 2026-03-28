@@ -52,7 +52,7 @@ export function GalleryCard({ product }) {
                 <div className="product-info">
                     <span className="product-category">{product.category}</span>
                     <h3 className="product-name">{product.name}</h3>
-                    <span className="product-price">{product.price}</span>
+                    <span className="product-price">{product.currency} {product.price}</span>
                 </div>
             </article>
 
