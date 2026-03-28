@@ -9,7 +9,7 @@ const PRODUCTS_API = `${API_BASE_URL}/products`;
 export const Admin = () => {
     const { token, logout } = useAuth();
     const queryClient = useQueryClient();
-    const [formData, setFormData] = useState({ name: '', category: 'Clothing', price: '', currency: 'USD', featured: false, images: [] });
+    const [formData, setFormData] = useState({ name: '', category: 'Clothing', price: '', currency: 'GHS', featured: false, images: [] });
     const [editingId, setEditingId] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [viewProduct, setViewProduct] = useState(null);
@@ -116,7 +116,7 @@ export const Admin = () => {
             name: product.name, 
             category: product.category, 
             price: product.price, 
-            currency: product.currency || 'USD',
+            currency: product.currency || 'GHS',
             featured: product.featured || false,
             images: product.images || []
         });
@@ -130,7 +130,7 @@ export const Admin = () => {
     };
 
     const handleOpenModal = () => {
-        setFormData({ name: '', category: 'Clothing', price: '', currency: 'USD', featured: false, images: [] });
+        setFormData({ name: '', category: 'Clothing', price: '', currency: 'GHS', featured: false, images: [] });
         setImageFiles([]);
         setEditingId(null);
         setShowModal(true);
@@ -231,6 +231,7 @@ export const Admin = () => {
                                         <div className="form-group">
                                             <label>Currency</label>
                                             <select name="currency" value={formData.currency} onChange={handleInputChange}>
+                                                <option value="GHS">GHS (₵)</option>
                                                 <option value="NGN">NGN (₦)</option>
                                                 <option value="USD">USD ($)</option>
                                                 <option value="EUR">EUR (€)</option>
