@@ -5,41 +5,50 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// Ensure mandatory S3 bits are present
+if (!process.env.S3_ACCESS_KEY_ID || !process.env.S3_SECRET_ACCESS_KEY || !process.env.S3_BUCKET) {
+  console.warn('⚠️ S3 Environment variables are missing! Uploads will fail.');
+}
+
 export const s3Client = new S3Client({
-  region: process.env.S3_REGION || 'us-east-1', // Default region
-  endpoint: process.env.S3_ENDPOINT,
+  region: process.env.S3_REGION || 'us-east-1',
+  // Railway often provides a custom endpoint. If empty string, must be undefined for AWS SDK.
+  endpoint: process.env.S3_ENDPOINT || undefined,
   credentials: {
     accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
     secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
   },
-  forcePathStyle: true, // Often needed for custom S3 endpoints like Railway's
+  forcePathStyle: true, // Required for custom S3 providers
 });
 
 export const uploadAndCompressToS3 = async (file: Express.Multer.File) => {
   const Bucket = process.env.S3_BUCKET || '';
-  const Key = `uploads/${Date.now()}-${file.originalname}`;
+  const Key = `uploads/${Date.now()}-${file.originalname.replace(/\s+/g, '-')}`;
   
   let buffer = file.buffer;
   let contentType = file.mimetype;
 
-  // Compress if larger than 3MB and is an image
-  if (file.size > 3 * 1024 * 1024 && file.mimetype.startsWith('image/')) {
-    console.log(`Compressing image: ${file.originalname} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
-    
-    // We'll convert to webp for better compression, or keep original format but lower quality
-    const pipeline = sharp(file.buffer);
-    
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg') {
-      buffer = await pipeline.jpeg({ quality: 80, progressive: true }).toBuffer();
-    } else if (file.mimetype === 'image/png') {
-      buffer = await pipeline.png({ quality: 80, compressionLevel: 8 }).toBuffer();
-    } else {
-      // Fallback for other image types (like webp)
-      buffer = await pipeline.webp({ quality: 80 }).toBuffer();
-      contentType = 'image/webp';
+  console.log(`Processing file: ${file.originalname}, size: ${file.size}`);
+
+  // Compress if larger than 3MB or just optimize for web consistently
+  if (file.mimetype.startsWith('image/')) {
+    try {
+        const pipeline = sharp(file.buffer);
+        
+        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg') {
+          buffer = await pipeline.jpeg({ quality: 80, progressive: true }).toBuffer();
+        } else if (file.mimetype === 'image/png') {
+          buffer = await pipeline.png({ quality: 80, compressionLevel: 8 }).toBuffer();
+        } else {
+          buffer = await pipeline.webp({ quality: 80 }).toBuffer();
+          contentType = 'image/webp';
+        }
+        console.log(`Compressed: ${file.originalname} -> ${buffer.length} bytes`);
+    } catch (sharpError) {
+        console.error('Sharp compression failed, using original buffer:', sharpError);
+        // Fallback to original buffer if sharp fails
+        buffer = file.buffer;
     }
-    
-    console.log(`Compressed to: ${(buffer.length / 1024 / 1024).toFixed(2)} MB`);
   }
 
   await s3Client.send(new PutObjectCommand({
@@ -47,10 +56,14 @@ export const uploadAndCompressToS3 = async (file: Express.Multer.File) => {
     Key,
     Body: buffer,
     ContentType: contentType,
-    ACL: 'public-read' // Just in case, though we use the proxy
+    ACL: 'public-read'
   }));
 
-  const finalUrl = `${process.env.BASE_URL}/api/images/${Key}`;
+  // Construct the final URL via our proxy
+  const baseUrl = process.env.BASE_URL || '';
+  if (!baseUrl) console.warn('⚠️ BASE_URL is not set. Image URLs may be broken.');
+  
+  const finalUrl = `${baseUrl}/api/images/${Key}`;
   return finalUrl;
 };
 
@@ -67,9 +80,9 @@ export const deleteFileFromS3 = async (url: string) => {
       Bucket,
       Key
     }));
-    console.log(`Successfully deleted from S3: ${Key}`);
+    console.log(`Deleted S3 object: ${Key}`);
   } catch (err) {
-    console.error(`Failed to delete from S3: ${Key}`, err);
+    console.error(`Failed to delete S3 object: ${Key}`, err);
   }
 };
 
@@ -80,7 +93,7 @@ export const getUploadPresignedUrl = async (fileName: string, contentType: strin
   const { url, fields } = await createPresignedPost(s3Client, {
     Bucket,
     Key,
-    Expires: 3600, // 1 hour
+    Expires: 3600,
     Fields: {
       acl: 'public-read',
     },
@@ -88,13 +101,11 @@ export const getUploadPresignedUrl = async (fileName: string, contentType: strin
       { bucket: Bucket },
       ['eq', '$key', Key],
       ['starts-with', '$Content-Type', contentType],
-      ['content-length-range', 0, 5242880], // Max 5MB
+      ['content-length-range', 0, 10485760], // Max 10MB
       { acl: 'public-read' },
     ],
   });
 
-  // Construct the final URL pointing to our backend proxy instead of direct S3
   const finalUrl = `${process.env.BASE_URL}/api/images/${Key}`;
-
   return { url, fields, finalUrl };
 };
