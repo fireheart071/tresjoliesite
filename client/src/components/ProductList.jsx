@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import './Featured.css';
 import { GalleryCard } from './GalleryCard';
+import { API_BASE_URL } from '../config';
+import './Featured.css';
 
 const fetchProducts = async (category) => {
-  const apiUrl = import.meta.env.VITE_API_URL;
-  let url = `${apiUrl}/products`;
+  let url = `${API_BASE_URL}/products`;
   if (category) url += `?category=${category}`;
   const response = await fetch(url);
   if (!response.ok) throw new Error('Failed to fetch products');

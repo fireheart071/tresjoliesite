@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import './Featured.css';
 import { GalleryCard } from './GalleryCard';
+import { API_BASE_URL } from '../config';
 
 const fetchFeaturedProducts = async () => {
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const response = await fetch(`${apiUrl}/products?featured=true`);
+    const response = await fetch(`${API_BASE_URL}/products?featured=true`);
     if (!response.ok) throw new Error('Failed to fetch featured products');
     return response.json();
 };

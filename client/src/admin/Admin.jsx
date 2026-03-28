@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from './AuthContext';
+import { API_BASE_URL } from '../config';
 import './Admin.css';
 
-const API_URL = `${import.meta.env.VITE_API_URL}/products`;
+const PRODUCTS_API = `${API_BASE_URL}/products`;
 
 export const Admin = () => {
     const { token, logout } = useAuth();
@@ -15,14 +16,14 @@ export const Admin = () => {
 
     // API Functions
     const fetchProducts = async () => {
-        const response = await fetch(API_URL);
+        const response = await fetch(PRODUCTS_API);
         if (!response.ok) throw new Error('Failed to fetch products');
         return response.json();
     };
 
     const saveProduct = async ({ product, id }) => {
         const method = id ? 'PUT' : 'POST';
-        const url = id ? `${API_URL}/${id}` : API_URL;
+        const url = id ? `${PRODUCTS_API}/${id}` : PRODUCTS_API;
         
         const data = new FormData();
         data.append('name', product.name);
@@ -30,12 +31,10 @@ export const Admin = () => {
         data.append('price', product.price);
         data.append('featured', product.featured);
         
-        // For PUT, we need to tell the server which old images to keep
         if (id) {
             data.append('existingImages', JSON.stringify(product.images));
         }
 
-        // Add brand new files
         if (imageFiles.length > 0) {
             imageFiles.forEach(file => {
                 data.append('images', file);
@@ -58,7 +57,7 @@ export const Admin = () => {
     };
 
     const deleteProduct = async (id) => {
-        const response = await fetch(`${API_URL}/${id}`, { 
+        const response = await fetch(`${PRODUCTS_API}/${id}`, { 
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
