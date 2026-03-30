@@ -18,12 +18,22 @@
 }
 
 .site-logo {
-  font-family: var(--font-heading);
-  font-size: 1.75rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: var(--text);
-  text-decoration: none;
+  display: flex;
+  align-items: center;
+  height: 48px;
+}
+
+.header-logo-img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply; /* Helps if there's a white background on the logo */
+}
+
+@media (max-width: 768px) {
+  .site-logo {
+    height: 36px;
+  }
 }
 
 .site-nav {
@@ -58,9 +68,5 @@
   
   .site-nav {
     gap: 1.5rem;
-  }
-  
-  .site-logo {
-    font-size: 1.5rem;
   }
 }
