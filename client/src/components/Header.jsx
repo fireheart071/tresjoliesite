@@ -42,10 +42,13 @@ export function Header() {
           <div className="nav-group">
             <div 
               className="dropdown-container"
-              onMouseEnter={() => setIsDropdownOpen(true)}
-              onMouseLeave={() => setIsDropdownOpen(false)}
+              onMouseEnter={() => window.innerWidth > 992 && setIsDropdownOpen(true)}
+              onMouseLeave={() => window.innerWidth > 992 && setIsDropdownOpen(false)}
             >
-              <button className="dropdown-trigger">
+              <button 
+                className="dropdown-trigger"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
                 More 
                 <svg 
                   className={`chevron ${isDropdownOpen ? 'up' : ''}`}
