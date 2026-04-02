@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from './AuthContext';
 import { API_BASE_URL } from '../config';
+import { ALL_CATEGORIES } from '../constants/categories';
 import './Admin.css';
 
 const PRODUCTS_API = `${API_BASE_URL}/products`;
@@ -223,8 +224,9 @@ export const Admin = () => {
                                     <div className="form-group">
                                         <label>Category</label>
                                         <select name="category" value={formData.category} onChange={handleInputChange}>
-                                            <option value="Clothing">Clothing</option>
-                                            <option value="Jewelry">Jewelry</option>
+                                            {ALL_CATEGORIES.map(cat => (
+                                                <option key={cat.name} value={cat.name}>{cat.name}</option>
+                                            ))}
                                         </select>
                                     </div>
                                     <div className="form-row">

@@ -1,9 +1,24 @@
 import { useState } from 'react';
 import './Header.css';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { ALL_CATEGORIES } from '../constants/categories';
 
 export function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const location = useLocation();
+
+  // Find the current active category to move it to the first slot
+  const currentPath = location.pathname;
+  const activeCategory = ALL_CATEGORIES.find(cat => cat.path === currentPath);
+
+  // Reorder categories for display
+  const displayItems = activeCategory 
+    ? [activeCategory, ...ALL_CATEGORIES.filter(cat => cat.path !== currentPath)]
+    : ALL_CATEGORIES;
+
+  // Split into Main (first 2 visible on desktop) and Extra (dropdown)
+  const mainItems = displayItems.slice(0, 2);
+  const extraItems = displayItems.slice(2);
 
   return (
     <header className="site-header">
@@ -14,13 +29,16 @@ export function Header() {
         </Link>
         
         <nav className="site-nav">
-          {/* Clothing and Jewelry - Only on Desktop */}
+           {/* Desktop Categories - First 2 visible */}
           <div className="nav-group hide-on-mobile">
-            <NavLink to="/clothing" className={({ isActive }) => isActive ? 'active-link' : ''}>Clothing</NavLink>
-            <NavLink to="/jewelry" className={({ isActive }) => isActive ? 'active-link' : ''}>Jewelry</NavLink>
+            {mainItems.map(cat => (
+              <NavLink key={cat.name} to={cat.path} className={({ isActive }) => isActive ? 'active-link' : ''}>
+                {cat.name}
+              </NavLink>
+            ))}
           </div>
 
-          {/* More and Featured - On both (Featured is always visible, More is the empty placeholder) */}
+          {/* More and Featured */}
           <div className="nav-group">
             <div 
               className="dropdown-container"
@@ -38,7 +56,20 @@ export function Header() {
               </button>
               {isDropdownOpen && (
                 <div className="dropdown-menu">
-                  <div className="dropdown-empty">Coming soon...</div>
+                  {/* Show all categories in dropdown on mobile, but only extra ones on desktop */}
+                  {ALL_CATEGORIES.map((cat) => {
+                    const isMainItem = mainItems.some(m => m.path === cat.path);
+                    return (
+                      <NavLink 
+                        key={cat.name} 
+                        to={cat.path}
+                        className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''} ${isMainItem ? 'hide-on-desktop' : ''}`}
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        {cat.name}
+                      </NavLink>
+                    );
+                  })}
                 </div>
               )}
             </div>

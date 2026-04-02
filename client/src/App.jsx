@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
-import { Clothing } from "./pages/Clothing";
-import { Jewelry } from "./pages/Jewelry";
+import { CategoryPage } from "./pages/CategoryPage";
+import { ALL_CATEGORIES } from "./constants/categories";
 import { Admin } from "./admin/Admin";
 import { Login } from "./admin/Login";
 import { AuthProvider } from "./admin/AuthContext";
@@ -15,8 +15,9 @@ function App() {
         {/* Visitor Pages with Site Layout */}
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/clothing" element={<Clothing />} />
-          <Route path="/jewelry" element={<Jewelry />} />
+          {ALL_CATEGORIES.map(cat => (
+            <Route key={cat.path} path={cat.path} element={<CategoryPage />} />
+          ))}
         </Route>
 
         {/* Admin Pages with Different Layout (Directly added here or using a new AdminLayout) */}

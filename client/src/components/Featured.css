@@ -142,3 +142,29 @@
     flex: 0 0 180px;
   }
 }
+
+/* Category Grid Layout (Wraps instead of scrolling) */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2.5rem 1.5rem;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem 1rem;
+  }
+  
+  .products-grid .product-card {
+    flex: 0 0 auto;
+  }
+}

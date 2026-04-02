@@ -1,22 +1,7 @@
 import { Link } from 'react-router-dom';
 import './Categories.css';
 
-const categories = [
-  {
-    id: 'clothing',
-    title: 'Clothing',
-    path: '/clothing',
-    description: 'Timeless pieces for your wardrobe.',
-    cta: 'Browse clothing',
-  },
-  {
-    id: 'jewelry',
-    title: 'Jewelry',
-    path: '/jewelry',
-    description: 'Handpicked accessories to complete your look.',
-    cta: 'Browse jewelry',
-  },
-];
+import { ALL_CATEGORIES } from '../constants/categories';
 
 export function Categories() {
   return (
@@ -24,9 +9,9 @@ export function Categories() {
       <div className="categories-inner">
         <h2 className="categories-heading">Shop by category</h2>
         <div className="categories-grid">
-          {categories.map((cat) => (
-            <Link key={cat.id} to={cat.path} className="category-card">
-              <span className="category-label">{cat.title}</span>
+          {ALL_CATEGORIES.map((cat) => (
+            <Link key={cat.name} to={cat.path} className="category-card">
+              <span className="category-label">{cat.name}</span>
               <p className="category-desc">{cat.description}</p>
               <span className="category-cta">{cat.cta}</span>
             </Link>
