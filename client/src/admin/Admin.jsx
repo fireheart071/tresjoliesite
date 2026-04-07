@@ -10,7 +10,7 @@ const PRODUCTS_API = `${API_BASE_URL}/products`;
 export const Admin = () => {
     const { token, logout } = useAuth();
     const queryClient = useQueryClient();
-    const [formData, setFormData] = useState({ name: '', category: 'Clothing', price: '', currency: 'GHS', featured: false, images: [] });
+    const [formData, setFormData] = useState({ name: '', category: 'Clothing', featured: false, images: [] });
     const [editingId, setEditingId] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [viewProduct, setViewProduct] = useState(null);
@@ -30,8 +30,7 @@ export const Admin = () => {
         const data = new FormData();
         data.append('name', product.name);
         data.append('category', product.category);
-        data.append('price', product.price);
-        data.append('currency', product.currency);
+
         data.append('featured', product.featured);
         
         if (id) {
@@ -116,8 +115,7 @@ export const Admin = () => {
         setFormData({ 
             name: product.name, 
             category: product.category, 
-            price: product.price, 
-            currency: product.currency || 'GHS',
+
             featured: product.featured || false,
             images: product.images || []
         });
@@ -131,7 +129,7 @@ export const Admin = () => {
     };
 
     const handleOpenModal = () => {
-        setFormData({ name: '', category: 'Clothing', price: '', currency: 'GHS', featured: false, images: [] });
+        setFormData({ name: '', category: 'Clothing', featured: false, images: [] });
         setImageFiles([]);
         setEditingId(null);
         setShowModal(true);
@@ -175,7 +173,7 @@ export const Admin = () => {
                                 <th>Images</th>
                                 <th>Name</th>
                                 <th>Category</th>
-                                <th>Price</th>
+
                                 <th>Featured</th>
                                 <th>Actions</th>
                             </tr>
@@ -194,7 +192,7 @@ export const Admin = () => {
                                     </td>
                                     <td>{product.name}</td>
                                     <td>{product.category}</td>
-                                    <td>{product.currency} {product.price}</td>
+
                                     <td>{product.featured ? 'Yes' : 'No'}</td>
                                     <td>
                                         <div className="action-btns">
@@ -229,22 +227,7 @@ export const Admin = () => {
                                             ))}
                                         </select>
                                     </div>
-                                    <div className="form-row">
-                                        <div className="form-group">
-                                            <label>Currency</label>
-                                            <select name="currency" value={formData.currency} onChange={handleInputChange}>
-                                                <option value="GHS">GHS (₵)</option>
-                                                <option value="NGN">NGN (₦)</option>
-                                                <option value="USD">USD ($)</option>
-                                                <option value="EUR">EUR (€)</option>
-                                                <option value="GBP">GBP (£)</option>
-                                            </select>
-                                        </div>
-                                        <div className="form-group flex-grow">
-                                            <label>Price</label>
-                                            <input type="text" name="price" value={formData.price} onChange={handleInputChange} required />
-                                        </div>
-                                    </div>
+
                                     <div className="form-group checkbox-group">
                                         <label>
                                             <input type="checkbox" name="featured" checked={formData.featured} onChange={handleInputChange} />
@@ -314,10 +297,7 @@ export const Admin = () => {
                                     <label>Category</label>
                                     <p>{viewProduct.category}</p>
                                 </div>
-                                <div className="view-field">
-                                    <label>Price</label>
-                                    <p>{viewProduct.currency} {viewProduct.price}</p>
-                                </div>
+
                                 <div className="view-field">
                                     <label>Status</label>
                                     <p>{viewProduct.featured ? 'Featured Item' : 'Standard Item'}</p>

@@ -102,11 +102,6 @@
   line-height: 1.3;
 }
 
-.product-price {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--accent);
-}
 
 .featured-loading, .featured-error {
   text-align: center;
