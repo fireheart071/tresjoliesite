@@ -18,8 +18,12 @@ connectDB().then(() => {
 });
 
 // Middleware
+const allowedOrigins = process.env.CORS_ORIGIN 
+    ? process.env.CORS_ORIGIN.split(/\|\||,/).map(origin => origin.trim()) 
+    : 'http://localhost:5173';
+
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
