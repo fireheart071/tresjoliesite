@@ -12,7 +12,7 @@ const fetchProducts = async (category) => {
 };
 
 export const ProductList = ({ category }) => {
-  const { data: products, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['products', category],
     queryFn: () => fetchProducts(category)
   });

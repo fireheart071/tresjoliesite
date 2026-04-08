@@ -10,7 +10,7 @@ const fetchFeaturedProducts = async () => {
 };
 
 export function Featured() {
-    const { data: products, isLoading, error } = useQuery({
+    const { data, isLoading, error } = useQuery({
         queryKey: ['featuredProducts'],
         queryFn: fetchFeaturedProducts
     });
