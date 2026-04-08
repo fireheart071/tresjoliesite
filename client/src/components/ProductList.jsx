@@ -22,10 +22,10 @@ export const ProductList = ({ category }) => {
 
   return (
     <div className="products-grid">
-      {products.map((product) => (
+      {(data?.products || []).map((product) => (
         <GalleryCard key={product._id} product={product} />
       ))}
-      {products.length === 0 && (
+      {(!data?.products || data.products.length === 0) && (
         <div style={{ gridColumn: '1 / -1', padding: '5rem 0', textAlign: 'center' }}>
           <p className="no-products text-muted" style={{ fontStyle: 'italic', fontSize: '1.1rem' }}>
             No products found in this category yet.

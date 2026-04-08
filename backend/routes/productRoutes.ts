@@ -17,13 +17,27 @@ const upload = multer({
 // GET /api/products
 router.get('/', async (req: Request, res: Response): Promise<void> => {
     try {
-        const { category, featured } = req.query;
+        const { category, featured, page = 1, limit = 100 } = req.query;
         const filter: any = {};
-        if (category) filter.category = category;
+        if (category && category !== 'All') filter.category = category;
         if (featured === 'true') filter.featured = true;
         
-        const products = await Product.find(filter).sort({ createdAt: -1 });
-        res.status(200).json(products);
+        const pageNum = parseInt(page as string);
+        const limitNum = parseInt(limit as string);
+
+        const products = await Product.find(filter)
+            .sort({ createdAt: -1 })
+            .skip((pageNum - 1) * limitNum)
+            .limit(limitNum);
+            
+        const total = await Product.countDocuments(filter);
+
+        res.status(200).json({
+            products,
+            total,
+            page: pageNum,
+            pages: Math.ceil(total / limitNum)
+        });
     } catch (error) {
         res.status(500).json({ message: 'Server error fetching products', error: error instanceof Error ? error.message : String(error) });
     }

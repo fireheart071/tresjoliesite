@@ -30,23 +30,19 @@ export const uploadAndCompressToS3 = async (file: Express.Multer.File) => {
 
   console.log(`Processing file: ${file.originalname}, size: ${file.size}`);
 
-  // Compress if larger than 3MB or just optimize for web consistently
+  // Web-optimal processing
   if (file.mimetype.startsWith('image/')) {
     try {
-        const pipeline = sharp(file.buffer);
+        // Resize to max-width 1200px (large enough for gallery) and convert to webp
+        buffer = await sharp(file.buffer)
+          .resize(1200, null, { withoutEnlargement: true })
+          .webp({ quality: 75, effort: 6 }) // Convert all images to WebP
+          .toBuffer();
         
-        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg') {
-          buffer = await pipeline.jpeg({ quality: 80, progressive: true }).toBuffer();
-        } else if (file.mimetype === 'image/png') {
-          buffer = await pipeline.png({ quality: 80, compressionLevel: 8 }).toBuffer();
-        } else {
-          buffer = await pipeline.webp({ quality: 80 }).toBuffer();
-          contentType = 'image/webp';
-        }
-        console.log(`Compressed: ${file.originalname} -> ${buffer.length} bytes`);
+        contentType = 'image/webp';
+        console.log(`Optimized: ${file.originalname} -> WebP (${buffer.length} bytes)`);
     } catch (sharpError) {
-        console.error('Sharp compression failed, using original buffer:', sharpError);
-        // Fallback to original buffer if sharp fails
+        console.error('Sharp optimization failed, using original buffer:', sharpError);
         buffer = file.buffer;
     }
   }

@@ -28,7 +28,7 @@ export function GalleryCard({ product }) {
                 <div className="product-image" onClick={toggleLightbox}>
                     {images.length > 0 ? (
                         <>
-                            <img src={images[currentIndex]} alt={product.name} />
+                            <img src={images[currentIndex]} alt={product.name || 'Product'} loading="lazy" />
                             
                             {images.length > 1 && (
                                 <div className="card-arrows">

@@ -15,10 +15,17 @@ export const Admin = () => {
     const [showModal, setShowModal] = useState(false);
     const [viewProduct, setViewProduct] = useState(null);
     const [imageFiles, setImageFiles] = useState([]);
+    const [page, setPage] = useState(1);
+    const [filterCategory, setFilterCategory] = useState('All');
+    const limit = 20; // Items per page
 
     // API Functions
-    const fetchProducts = async () => {
-        const response = await fetch(PRODUCTS_API);
+    const fetchProducts = async ({ queryKey }) => {
+        const [_key, page, category] = queryKey;
+        let url = `${PRODUCTS_API}?page=${page}&limit=${limit}`;
+        if (category !== 'All') url += `&category=${category}`;
+        
+        const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch products');
         return response.json();
     };
@@ -68,8 +75,8 @@ export const Admin = () => {
     };
 
     // React Query
-    const { data: products, isLoading, error } = useQuery({
-        queryKey: ['products'],
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['products', page, filterCategory],
         queryFn: fetchProducts
     });
 
@@ -163,7 +170,21 @@ export const Admin = () => {
             <main className="admin-main">
                 <header className="admin-header">
                     <h1>Store Inventory</h1>
-                    <p>Manage your products and collections.</p>
+                    <div className="admin-controls">
+                        <div className="filter-group">
+                            <label>Filter by Category:</label>
+                            <select 
+                                value={filterCategory} 
+                                onChange={(e) => { setFilterCategory(e.target.value); setPage(1); }}
+                                className="admin-select-filter"
+                            >
+                                <option value="All">All Categories</option>
+                                {ALL_CATEGORIES.map(cat => (
+                                    <option key={cat.name} value={cat.name}>{cat.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                 </header>
 
                 <div className="table-container">
@@ -179,7 +200,7 @@ export const Admin = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {products.map(product => (
+                            {(data?.products || []).map(product => (
                                 <tr key={product._id}>
                                     <td>
                                         <div className="img-preview-row">
@@ -206,6 +227,28 @@ export const Admin = () => {
                         </tbody>
                     </table>
                 </div>
+
+                {data?.pages > 1 && (
+                    <div className="admin-pagination">
+                        <button 
+                            disabled={page === 1} 
+                            onClick={() => setPage(p => p - 1)}
+                            className="btn-pagination"
+                        >
+                            &larr; Previous
+                        </button>
+                        <span className="pagination-info">
+                            Page {data.page} of {data.pages} ({data.total} items)
+                        </span>
+                        <button 
+                            disabled={page === data.pages} 
+                            onClick={() => setPage(p => p + 1)}
+                            className="btn-pagination"
+                        >
+                            Next &rarr;
+                        </button>
+                    </div>
+                )}
             </main>
 
             {showModal && (
