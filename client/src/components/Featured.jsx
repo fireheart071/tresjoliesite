@@ -23,7 +23,7 @@ export function Featured() {
             <div className="featured-inner">
                 <h2 className="featured-heading">Featured pieces</h2>
                 <div className="featured-grid">
-                    {(data?.products || []).map((product) => (
+                    {Array.isArray(data?.products) && data.products.map((product) => (
                         <GalleryCard key={product._id} product={product} />
                     ))}
                 </div>

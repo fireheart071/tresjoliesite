@@ -22,7 +22,7 @@ export const ProductList = ({ category }) => {
 
   return (
     <div className="products-grid">
-      {(data?.products || []).map((product) => (
+      {Array.isArray(data?.products) && data.products.map((product) => (
         <GalleryCard key={product._id} product={product} />
       ))}
       {(!data?.products || data.products.length === 0) && (
