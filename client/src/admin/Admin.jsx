@@ -190,7 +190,7 @@ export const Admin = () => {
                                             )}
                                         </div>
                                     </td>
-                                    <td>{product.name}</td>
+                                    <td>{product.name || <em style={{ opacity: 0.5 }}>No Name</em>}</td>
                                     <td>{product.category}</td>
 
                                     <td>{product.featured ? 'Yes' : 'No'}</td>
@@ -217,7 +217,7 @@ export const Admin = () => {
                                 <div className="form-column">
                                     <div className="form-group">
                                         <label>Name</label>
-                                        <input type="text" name="name" value={formData.name} onChange={handleInputChange} required />
+                                        <input type="text" name="name" value={formData.name} onChange={handleInputChange} />
                                     </div>
                                     <div className="form-group">
                                         <label>Category</label>
@@ -291,7 +291,7 @@ export const Admin = () => {
                             <div className="view-info">
                                 <div className="view-field">
                                     <label>Name</label>
-                                    <p>{viewProduct.name}</p>
+                                    <p>{viewProduct.name || <em style={{ opacity: 0.5 }}>No Name</em>}</p>
                                 </div>
                                 <div className="view-field">
                                     <label>Category</label>
