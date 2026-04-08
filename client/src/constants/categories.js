@@ -41,6 +41,12 @@ export const ALL_CATEGORIES = [
     description: 'Beautifully crafted floral accessories for a touch of nature.',
     cta: 'Explore Florals'
   },
+  { 
+    name: 'Couture', 
+    path: '/couture', 
+    description: 'Bespoke, high-end fashion pieces tailored for unparalleled elegance.',
+    cta: 'Explore Couture'
+  },
 ];
 
 export const MAIN_CATEGORIES = ALL_CATEGORIES.slice(0, 2);
