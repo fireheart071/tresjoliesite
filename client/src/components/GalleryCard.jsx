@@ -51,7 +51,7 @@ export function GalleryCard({ product }) {
                 </div>
                 <div className="product-info">
                     <span className="product-category">{product.category}</span>
-                    <h3 className="product-name">{product.name}</h3>
+                    {product.name && <h3 className="product-name">{product.name}</h3>}
                 </div>
             </article>
 
@@ -71,7 +71,7 @@ export function GalleryCard({ product }) {
                         )}
 
                         <div className="lightbox-info">
-                            <h3>{product.name}</h3>
+                            {product.name && <h3>{product.name}</h3>}
                             <p>{currentIndex + 1} / {images.length}</p>
                         </div>
                     </div>

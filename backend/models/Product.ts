@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IProduct extends Document {
-  name: string;
+  name?: string;
   category: string;
   price?: string;
   currency?: string;
@@ -10,7 +10,7 @@ export interface IProduct extends Document {
 }
 
 const ProductSchema: Schema = new Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: false },
   category: { type: String, required: true },
   price: { type: String, required: false },
   currency: { type: String, required: false, default: 'GHS' },
