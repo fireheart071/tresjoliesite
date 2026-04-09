@@ -20,6 +20,8 @@ router.get('/:folder/:filename', async (req: Request, res: Response): Promise<vo
 
         if (Body instanceof stream.Readable) {
             res.setHeader('Content-Type', ContentType || 'image/jpeg');
+            // Browser cache for 1 year - critical for image loading performance
+            res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
             Body.pipe(res);
         } else {
             res.status(404).send('Not found');
