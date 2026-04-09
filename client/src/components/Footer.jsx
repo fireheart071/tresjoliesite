@@ -15,6 +15,7 @@ export function Footer() {
           <Link to="/#featured">Featured</Link>
         </div>
         <p className="footer-copy">&copy; {new Date().getFullYear()} Très Jolie. All rights reserved.</p>
+        <p className="footer-designer">Designed by <a href="https://skytechghana.com/" target="_blank" rel="noopener noreferrer">SkyTech Ghana</a></p>
       </div>
     </footer>
   );
